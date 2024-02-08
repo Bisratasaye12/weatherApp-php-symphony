@@ -1,0 +1,100 @@
+{% extends "base.html.twig" %}
+
+{% block title %} {{ name }} {% endblock %}
+{% block body %}
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+    {% if id is defined %}
+
+
+
+    <script type="text/javascript">
+
+    $(document).ready(function () {
+        var chart = Highcharts.chart("mychart",{
+            chart:{
+                zoomType: 'x',
+                panning: true,
+                panKey: 'shift'
+            },
+            title: {"text": "Weather data"},
+            subtitle: {
+                text: 'Click and drag to zoom in. Hold down shift key to pan.'
+            },
+            xAxis: {"title": {"text": "Time"}},
+            yAxis: {"title": {"text": "Temperature"}},
+            series: [{"name": "Min", "data": []}, {"name": "Max","data": []}, {"name": "Current", "data": []}]
+        })
+
+
+        function getData(chart) {
+            $.ajax({
+                url: "/graph/{{ id }}",
+                success: function (data) {
+                    var min = data.min.split(",").map(Number)
+                    var max = data.max.split(",").map(Number)
+                    var current = data.current.split(",").map(Number)
+
+                    chart.update({
+                        series: [{"name": "Min", "data": min},
+                            {"name": "Max","data": max},
+                            {"name": "Current", "data": current}]
+                    })
+                }
+            });
+        }
+        getData(chart)
+        setInterval(function(){getData(chart)},10000)
+
+    })
+    </script>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h1>{{ name }} {% if icon is defined %} <img src="{{ icon }}"> {% endif %}</h1>
+                <div id="result"></div>
+                <div id="mychart" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+            </div>
+            <div class="col-md-offset-1 col-md-7">
+
+
+                <h3>Last 10 Values</h3>
+                <table class="table">
+                    <th>Min</th>
+                    <th>Max</th>
+                    <th>Current</th>
+                    <th>humidity</th>
+                    <th>Wind Speed</th>
+                    {% for temp in temperatures %}
+                        <tr>
+                            <td>{{ temp.min }}</td>
+                            <td>{{ temp.max }}</td>
+                            <td>{{ temp.currentTemp }}</td>
+                            <td>{{ temp.humidity }}</td>
+                            <td>{{ temp.windSpeed }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            </div>
+        </div>
+    </div>
+        {% else %}
+            <div class="container">
+                <div class="row">
+                    <div style="margin-top: 5pc" class="col-md-4 col-md-offset-4">
+                        <div class="alert alert-info">
+                            <strong>There are no data on the database for this city</strong>
+                            <p>E-Mail: <a href="mailto:weather@open_weather.com">weather@open_weather.com</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% endif %}
+{% endblock %}

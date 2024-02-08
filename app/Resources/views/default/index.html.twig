@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %} Home {% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-4 col-md-4">
+                <div class="well">
+                    <div class="blue">
+                        <h5 style="text-align: center;">Available weather data for:</h5>
+                    </div>
+                    {% if cities is defined %}
+                        <table class="table">
+                            {% for city in cities %}
+                                <tr>
+                                    <td style="width: 33%"><a href="/city/{{ city.id }}">{{ city.name }}</a></td>
+                                    <td></td>
+                                    <td style="width: 33%;text-align: center"><a style="float: right"
+                                                                                 class="btn btn-danger btn-xs"
+                                                                                 href="/delete/{{ city.id }}">Delete</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+
+                        </table>
+                        <hr>
+                        <a class="search" style="text-align: center;display: block" href="/search">Search </a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

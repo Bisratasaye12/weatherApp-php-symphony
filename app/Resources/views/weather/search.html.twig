@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+{% block title %} Search {% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-offset-4 col-md-4">
+                <div class="well">
+                    <h3 class="blue" style="text-align: center;margin-bottom: 20px">Search City</h3>
+                    {{ form_start(form) }}
+                    {{ form_row(form.name) }}
+                    <div style="text-align: center">{{ form_row(form.Search) }}</div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
